@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maisone Tech · glowing edge 3D</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #0c0f1e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1400px;
+            background: radial-gradient(circle at 70% 20%, #1e2a5a, #030514);
+        }
+
+        /* main 3D card — now with vibrant moving border */
+        .login-3d {
+            width: 420px;
+            padding: 2.6rem 2.2rem;
+            background: rgba(8, 18, 28, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 50px 20px 50px 20px;
+            /* super important: relative + overflow hidden to contain the moving edge */
+            position: relative;
+            overflow: hidden;
+            /* 3D transform base */
+            transform: rotateX(5deg) rotateY(3deg) translateZ(30px);
+            box-shadow: 0 60px 80px -20px #000000cc, 0 0 0 1px rgba(255, 140, 0, 0.3) inset;
+            transition: transform 0.2s ease;
+            color: white;
+            animation: levitate 7s infinite alternate ease-in-out;
+            z-index: 2;
+        }
+
+        /* floating levitate for extra 3D */
+        @keyframes levitate {
+            0% { transform: rotateX(5deg) rotateY(3deg) translateZ(30px) translateY(0); }
+            100% { transform: rotateX(4deg) rotateY(2deg) translateZ(50px) translateY(-10px); }
+        }
+
+        /* the moving color border — animated gradient that spins */
+        .login-3d::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                from 0deg,
+                #ff0055,
+                #ffaa00,
+                #00ffcc,
+                #aa00ff,
+                #ff0055,
+                #ffaa00,
+                #00ffcc,
+                #aa00ff,
+                #ff0055
+            );
+            animation: spinBorder 6s linear infinite;
+            z-index: -2; /* behind the card background */
+        }
+
+        /* the inner background overlay (so text/content is readable) — but we still want see moving border at edges */
+        .login-3d::after {
+            content: '';
+            position: absolute;
+            inset: 3px;            /* creates border thickness: 3px of moving gradient peeks through */
+            background: rgba(8, 18, 28, 0.9);
+            backdrop-filter: blur(12px);
+            border-radius: 48px 18px 48px 18px;
+            z-index: -1;
+            box-shadow: inset 0 0 30px #00aaff20, 0 0 30px #ffaa0030;
+        }
+
+        @keyframes spinBorder {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* brand section */
+        .brand {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 3;
+        }
+
+        .brand h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(145deg, #fff2b5, #ffb347, #7afff0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 20px #ffae00, 0 10px 20px #000;
+            letter-spacing: 1px;
+        }
+
+        .brand h1 i {
+            color: #ffd966;
+            filter: drop-shadow(0 0 15px magenta);
+            margin-right: 8px;
+        }
+
+        .brand .sub {
+            font-size: 1.2rem;
+            font-weight: 300;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #ffb7c5, #a6f0ff, #ffd966);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* input fields - combined username/email */
+        .input-group {
+            margin-bottom: 2rem;
+            transform: translateZ(25px);
+            position: relative;
+            z-index: 3;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 1rem;
+            font-weight: 400;
+            margin-bottom: 8px;
+            color: #ffe8c7;
+            text-shadow: 0 2px 5px black;
+        }
+
+        .input-group label i {
+            color: #ffa75e;
+            width: 28px;
+            font-size: 1.2rem;
+        }
+
+        .input-field {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(255, 200, 100, 0.5);
+            border-radius: 40px;
+            padding: 15px 22px;
+            font-size: 1rem;
+            color: white;
+            outline: none;
+            box-shadow: 0 10px 0 #00000066, 0 10px 25px black;
+            transition: all 0.2s ease;
+        }
+
+        .input-field:focus {
+            border-color: #ffb96a;
+            box-shadow: 0 8px 0 #2f3f5e, 0 0 40px #ffae42, 0 0 60px #ff5eaa;
+            background: #122433;
+            transform: scale(1.01);
+        }
+
+        .input-field::placeholder {
+            color: #c0d4f0;
+            font-weight: 300;
+        }
+
+        /* 3D login button (extra punch) */
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(145deg, #fe8c00, #f83600, #c84e89);
+            border: none;
+            padding: 17px 20px;
+            border-radius: 60px;
+            font-size: 1.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: #fffcdd;
+            text-shadow: 0 3px 0 #990000, 0 0 20px yellow;
+            box-shadow: 0 20px 0 #631f2b, 0 30px 35px black, 0 0 60px #ff5e00;
+            transform: translateY(-5px) translateZ(30px);
+            transition: 0.08s linear, box-shadow 0.3s;
+            cursor: pointer;
+            margin: 2rem 0 1.8rem;
+            border: 1px solid #ffc964;
+            position: relative;
+            z-index: 3;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px) translateZ(40px);
+            box-shadow: 0 12px 0 #631f2b, 0 30px 40px black, 0 0 80px #ffaa33, 0 0 120px #ff44ee;
+            background: linear-gradient(145deg, #ffaa33, #ff4d4d, #f761d5);
+            letter-spacing: 6px;
+        }
+
+        .login-btn:active {
+            transform: translateY(8px) translateZ(20px);
+            box-shadow: 0 8px 0 #631f2b, 0 20px 30px black;
+        }
+
+        /* interactive links */
+        .links {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8rem;
+            margin: 1.5rem 0 1rem;
+            z-index: 3;
+            position: relative;
+        }
+
+        .links a {
+            color: #ffe3b1;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 400;
+            padding: 8px 20px;
+            border-radius: 40px;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 140, 0, 0.7);
+            transition: 0.2s;
+            box-shadow: 0 5px 0 #030c14;
+            width: fit-content;
+        }
+
+        .links a:hover {
+            color: #fff5b0;
+            border-color: #ffaa33;
+            background: #1f3147;
+            box-shadow: 0 8px 0 #2e435a, 0 0 30px cyan;
+            transform: scale(1.05) translateY(-3px);
+        }
+
+        .links a i {
+            margin-right: 8px;
+            color: #ffb347;
+        }
+
+        /* footer */
+        .footer-note {
+            text-align: center;
+            margin-top: 1.8rem;
+            font-size: 0.9rem;
+            color: #e5f0ff;
+            text-shadow: 0 2px 5px black;
+            border-top: 1px solid #ff7b7b60;
+            padding-top: 1.2rem;
+            z-index: 3;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .footer-note i {
+            color: #ffb27f;
+        }
+
+        .footer-note span {
+            font-weight: 700;
+            background: linear-gradient(145deg, #ffbd7f, #a6ffff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* extra glowing blobs (moving) behind the card for more life */
+        .ambient {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .ambient div {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle at 30% 30%, #ff44aa80, #3700ff00 80%);
+            border-radius: 50%;
+            filter: blur(60px);
+            animation: moveBlob 14s infinite alternate;
+        }
+
+        .ambient div:nth-child(2) {
+            background: radial-gradient(circle at 70% 30%, #ffaa3380, #00a6ff00 80%);
+            width: 400px;
+            height: 400px;
+            bottom: 0;
+            right: 0;
+            animation: moveBlob2 18s infinite alternate;
+        }
+
+        @keyframes moveBlob {
+            0% { transform: translate(-20%, -10%) scale(1); opacity: 0.5; }
+            100% { transform: translate(30%, 40%) scale(1.4); opacity: 0.3; }
+        }
+        @keyframes moveBlob2 {
+            0% { transform: translate(10%, 20%) scale(1); opacity: 0.4; }
+            100% { transform: translate(-20%, -30%) scale(1.8); opacity: 0.7; }
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient">
+        <div></div>
+        <div></div>
+    </div>
+
+    <div class="login-3d">
+        <div class="brand">
+            <h1>
+                <i class="fas fa-cubes"></i> Maisone Tech
+            </h1>
+            <div class="sub">· LOGIN ·</div>
+        </div>
+
+        <!-- combined username / email field (updated) -->
+        <div class="input-group">
+            <label><i class="fas fa-id-card"></i> Username or Email</label>
+            <input class="input-field" type="text" placeholder="e.g., johndoe@example.com">
+        </div>
+
+        <div class="input-group">
+            <label><i class="fas fa-lock"></i> Password</label>
+            <input class="input-field" type="password" placeholder="··········">
+        </div>
+
+        <button class="login-btn"><i class="fas fa-arrow-right-to-bracket" style="margin-right: 12px;"></i> Login</button>
+
+        <div class="links">
+            <a href="#"><i class="fas fa-key"></i> Forget password ? Click Here</a>
+            <a href="#"><i class="fas fa-user-plus"></i> Don't have an account ? Click Here</a>
+        </div>
+
+        <div class="footer-note">
+            <i class="far fa-registered"></i>
+            <span>Maisone Tech</span> · 2025-12-10
+            <i class="fas fa-cube"></i>
+        </div>
+    </div>
+</body>
+</html>
